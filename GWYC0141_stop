@@ -1,0 +1,47 @@
+#!/bin/ksh 
+#
+#*******************************************************************************
+# System        : Europcar Greenway Project
+# Subsystem     : Greenway Start/Stop Tools
+# Module        : GWYC0141_stop
+# $Source:  $
+# Author(s)     : GEY Olivier
+# Date          : 99/10/21
+# $Revision: $
+# Purpose       : Stop GWYC0141
+#
+#******************************************************************************
+# Change History
+# --------------
+#
+# $Log:	 $
+#
+# Revision 1.1 99/10/21 GEY O
+#	- creation 
+#
+#ident "$Header: GWYC0141_stop  99/10/21 Olivier GEY $"
+
+NB_ERROR=0
+check_return_code()
+{
+  [ "$?" -ne "0" ] && NB_ERROR=$(expr ${NB_ERROR} + 1)
+} 
+
+
+echo "  - $0 : Stopping GWYC0141"
+[ -f ${GWY_BCH}/GWYC0141_*.1 ] && kill $(cat ${GWY_BCH}/GWYC0141_*.1)
+check_return_code
+
+if [[ -f ${GWY_BCH}/GWYC0141_* ]]
+then
+  echo "  - $0 : Removing ${GWY_BCH} files"
+  rm ${GWY_BCH}/GWYC0141_*
+  check_return_code
+fi
+
+if [[ ${NB_ERROR} -eq "0" ]]
+then
+  echo "  - $0 : GWYC0141 has been stopped"
+fi
+
+exit ${NB_ERROR}
