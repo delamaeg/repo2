@@ -1,0 +1,72 @@
+#!/bin/ksh 
+#/*****************************************************************************/
+#/* Copyright (C)                 <Europcar>                        <2003>    */
+#/*****************************************************************************
+#===================== Source Header ==========================================
+#  %PCMS_HEADER_SUBSTITUTION_START%
+#     Filename: %PM%
+#     Revision: %PR%
+#    Item Spec: %PID%
+#   Originator: %PO%
+# Last Changed: %PRT%
+# ------------------------------------------------------------------------------
+# Related Change Documents:
+#   %PIRC%
+# ------------------------------------------------------------------------------
+# Related Baselines:
+#   %PIRB%
+# ------------------------------------------------------------------------------
+# Item History:
+#   %PL%
+# ident "$Header: %PR% "
+#=================== End of Source Header ===================================*/
+#ident "$Header: /src/shell/%PM%,v PVCS %PR% $";
+#  %PCMS_HEADER_SUBSTITUTION_END%
+#
+#*******************************************************************************
+# System        : Europcar Greenway Project
+# Subsystem     : Greenway Start/Stop Tools
+# Module        : GWYC0141_start
+# $Source:  $
+# Author(s)     : GEY Olivier
+# Date          : 99/10/21
+# $Revision: $
+# Purpose       : Start GWYC0141
+#
+#******************************************************************************
+# Change History
+# --------------
+#
+# $Log:	 $
+# Revision 1.4 99/11/17 GEY O
+# 	- modification du test d'existance des fichiers -f devient -a
+# Revision 1.3 99/11/03 GEY O
+# 	- Suppression des fichiers de GWY_BCH afin de pouvoir redemarrer
+#	le serveur de batch meme apres un crash.
+# Revision 1.2 99/10/22 GEY O
+# 	- Correction / apres GWY_BIN
+# Revision 1.1 99/10/21 GEY O
+#	- creation 
+#
+#ident "$Header: GWYC0141_start  99/10/21 Olivier GEY $"
+
+NB_ERROR=0
+check_return_code()
+{
+  [ "$?" -ne "0" ] && NB_ERROR=$(expr ${NB_ERROR} + 1)
+} 
+
+echo "  - $0 : Removing ${GWY_BCH} files"
+[ -a ${GWY_BCH}/GWYC0141_* ] && rm ${GWY_BCH}/GWYC0141_*
+check_return_code
+
+echo "  - $0 : Starting GWYC0141"
+${GWY_BIN}/GWYS0071 GWYS0145 1074 ${LOGNAME} 
+check_return_code
+
+if [[ ${NB_ERROR} -eq "0" ]]
+then
+  echo "  - $0 : GWYC0141 has been started"
+fi
+
+exit ${NB_ERROR}
